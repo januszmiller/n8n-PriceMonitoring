@@ -16,26 +16,11 @@
       "name": "Cron",
       "type": "n8n-nodes-base.cron",
       "position": [
-        460,
-        1080
+        3320,
+        1480
       ],
       "typeVersion": 1,
-      "id": "884ed84f-c297-4697-bbde-870b3588aef4"
-    },
-    {
-      "parameters": {
-        "webhookUri": "={{$node[\"CONFIG\"].parameter[\"values\"][\"string\"][0][\"value\"]}}",
-        "text": "=Nowa cena - {{$node[\"Get single item\"].json[\"Name\"]}}\nAktualna cena: {{$node[\"Get actual price\"].json[\"price\"]}} {{$node[\"Get single item\"].json[\"Currency\"]}}\nPoprzednia cena: {{$node[\"Get top record\"].json[\"Price\"]}} {{$node[\"Get single item\"].json[\"Currency\"]}}\nURL: {{$node[\"Get single item\"].json[\"URL\"]}}",
-        "options": {}
-      },
-      "name": "NotifyPriceChange",
-      "type": "n8n-nodes-base.discord",
-      "position": [
-        2840,
-        1020
-      ],
-      "typeVersion": 1,
-      "id": "bbfa02d4-d0d8-4d64-8072-280dbfde011a"
+      "id": "cbe5438b-a5e6-4d8f-8f3b-dfb1d0b0ea82"
     },
     {
       "parameters": {
@@ -58,10 +43,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        460,
-        900
+        3320,
+        1300
       ],
-      "id": "a0f8b0e0-bc4f-4c43-a390-5e24fc28d932"
+      "id": "2899f5f4-24d6-4732-9cc3-bef40366036d"
     },
     {
       "parameters": {
@@ -74,11 +59,11 @@
       "name": "Fetch web",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1080,
-        1080
+        3940,
+        1480
       ],
       "typeVersion": 1,
-      "id": "ec2eff18-ffad-421a-a823-c59da322b248"
+      "id": "308a5631-205e-408c-8763-7c971ad9cbfc"
     },
     {
       "parameters": {
@@ -95,11 +80,11 @@
       "name": "HTML extract",
       "type": "n8n-nodes-base.htmlExtract",
       "position": [
-        1280,
-        1080
+        4140,
+        1480
       ],
       "typeVersion": 1,
-      "id": "63a3778b-f378-4c50-9a8b-beb1d4393320"
+      "id": "d13d6a23-858b-46e7-8ec0-6d1e12b400eb"
     },
     {
       "parameters": {
@@ -108,11 +93,11 @@
       "name": "Get actual price",
       "type": "n8n-nodes-base.functionItem",
       "position": [
-        1480,
-        1080
+        4340,
+        1480
       ],
       "typeVersion": 1,
-      "id": "dd09dfb6-880f-47ca-b99e-0090d8847c8a"
+      "id": "e3e83059-2d32-4aeb-9531-e964974d76b4"
     },
     {
       "parameters": {
@@ -129,11 +114,11 @@
       "name": "Price exists",
       "type": "n8n-nodes-base.if",
       "position": [
-        1660,
-        1080
+        4520,
+        1480
       ],
       "typeVersion": 1,
-      "id": "9738d991-45eb-4d60-95c8-4670b7c0d93b"
+      "id": "7d34e6e8-7948-4308-bfa0-e590c8a2569a"
     },
     {
       "parameters": {
@@ -144,11 +129,11 @@
       "name": "Notify incorrect price",
       "type": "n8n-nodes-base.discord",
       "position": [
-        1880,
-        1260
+        4720,
+        1640
       ],
       "typeVersion": 1,
-      "id": "542ce9ba-f652-4b5c-978d-f87fdf3a81df"
+      "id": "0e361628-7d7f-43f1-bea6-946e24e7d7b1"
     },
     {
       "parameters": {
@@ -165,10 +150,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2040,
-        1060
+        4900,
+        1460
       ],
-      "id": "2cc28c79-279b-49fd-85ba-31bf2854a69e"
+      "id": "ee49d358-1bba-4a9b-b7e1-790747359276"
     },
     {
       "parameters": {
@@ -196,10 +181,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        2660,
-        1320
+        5420,
+        1680
       ],
-      "id": "cd4db92f-c896-427a-8c47-df0ab20ac51b"
+      "id": "576cf598-4ad0-4c96-8541-ee59cefb0ffc"
     },
     {
       "parameters": {
@@ -217,11 +202,11 @@
       "name": "Get date",
       "type": "n8n-nodes-base.set",
       "position": [
-        2480,
-        1320
+        5240,
+        1680
       ],
       "typeVersion": 1,
-      "id": "a42fd58a-16c0-4c6c-a62a-95841ca40c2e"
+      "id": "e8f9b6c5-a12b-461e-ba8c-b207e0569f2f"
     },
     {
       "parameters": {
@@ -234,11 +219,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
       "position": [
-        2420,
-        1040
+        5280,
+        1440
       ],
       "alwaysOutputData": false,
-      "id": "3258e7ca-3815-4c74-abc4-63d00624eba0"
+      "id": "ec60dfd6-8263-4607-93a1-7f3258f7d6cc"
     },
     {
       "parameters": {
@@ -256,10 +241,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2620,
-        1040
+        5020,
+        1700
       ],
-      "id": "17839106-80a3-44df-a1f2-eb612a176145"
+      "id": "8edb7a7f-8456-4027-bb3f-543ee1287c9e"
     },
     {
       "parameters": {
@@ -278,17 +263,17 @@
         },
         "options": {}
       },
-      "id": "fe78818f-8549-4fca-9a9b-5c95786f4bf9",
+      "id": "48082c12-d972-4769-a4ca-a09adfc46eba",
       "name": "Get item list",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 3,
       "position": [
-        680,
-        1080
+        3540,
+        1480
       ],
       "credentials": {
         "googleApi": {
-          "id": "2",
+          "id": "1",
           "name": "Google Sheets account"
         }
       }
@@ -302,10 +287,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
       "position": [
-        880,
-        1080
+        3740,
+        1480
       ],
-      "id": "719e1613-297b-48ed-9a42-3b27f30d1ec8"
+      "id": "c1525734-a4fb-436b-ac21-ae7f3a605b7f"
     },
     {
       "parameters": {
@@ -341,17 +326,17 @@
         },
         "options": {}
       },
-      "id": "8dc7fa5f-cb6c-4375-90b4-3501865ec9e3",
+      "id": "e80b6df4-a5c6-4956-9415-8f8ad09198d8",
       "name": "Insert new price",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 3,
       "position": [
-        2840,
-        1320
+        5600,
+        1680
       ],
       "credentials": {
         "googleApi": {
-          "id": "2",
+          "id": "1",
           "name": "Google Sheets account"
         }
       }
@@ -369,13 +354,13 @@
         },
         "options": {}
       },
-      "id": "5e315891-015e-480a-a18f-d437abfb3da4",
+      "id": "bb156617-3e14-4716-86cf-9dfd91f6fce9",
       "name": "Sort items",
       "type": "n8n-nodes-base.itemLists",
       "typeVersion": 1,
       "position": [
-        2240,
-        1040
+        5100,
+        1440
       ]
     },
     {
@@ -405,21 +390,56 @@
           "returnAllMatches": "returnAllMatches"
         }
       },
-      "id": "e9086903-8572-4961-b89a-205add59bf7e",
+      "id": "83b511f3-c041-42eb-9c3e-7ff894569580",
       "name": "Get all item records",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 3,
       "position": [
-        1860,
-        1060
+        4720,
+        1460
       ],
       "alwaysOutputData": true,
       "credentials": {
         "googleApi": {
-          "id": "2",
+          "id": "1",
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$node[\"Get actual price\"].json[\"price\"]}}",
+              "value2": "={{$json[\"Price\"]*0.95}}"
+            }
+          ]
+        }
+      },
+      "name": "Price dropped > 5%",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5480,
+        1440
+      ],
+      "id": "172acafb-9580-4809-bb2b-0f2665dd32ba"
+    },
+    {
+      "parameters": {
+        "webhookUri": "={{$node[\"CONFIG\"].parameter[\"values\"][\"string\"][0][\"value\"]}}",
+        "text": "=Nowa cena - {{$node[\"Get single item\"].json[\"Name\"]}}\nAktualna cena: {{$node[\"Get actual price\"].json[\"price\"]}} {{$node[\"Get single item\"].json[\"Currency\"]}}\nPoprzednia cena: {{$node[\"Get top record\"].json[\"Price\"]}} {{$node[\"Get single item\"].json[\"Currency\"]}}\nURL: {{$node[\"Get single item\"].json[\"URL\"]}}",
+        "options": {}
+      },
+      "name": "Notify price change",
+      "type": "n8n-nodes-base.discord",
+      "position": [
+        5700,
+        1420
+      ],
+      "typeVersion": 1,
+      "id": "244bca12-05f9-4110-ad15-cb5dcb804702"
     }
   ],
   "pinData": {},
@@ -530,7 +550,7 @@
       "main": [
         [
           {
-            "node": "Price changed",
+            "node": "Price dropped > 5%",
             "type": "main",
             "index": 0
           }
@@ -541,7 +561,7 @@
       "main": [
         [
           {
-            "node": "NotifyPriceChange",
+            "node": "Get date",
             "type": "main",
             "index": 0
           }
@@ -549,17 +569,6 @@
         [
           {
             "node": "Get single item",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "NotifyPriceChange": {
-      "main": [
-        [
-          {
-            "node": "Get date",
             "type": "main",
             "index": 0
           }
@@ -631,14 +640,43 @@
           }
         ]
       ]
+    },
+    "Price dropped > 5%": {
+      "main": [
+        [
+          {
+            "node": "Notify price change",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Price changed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify price change": {
+      "main": [
+        [
+          {
+            "node": "Get date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {},
-  "versionId": "8608f876-aa4e-4491-b2a0-40953acab8b5",
-  "id": "2",
+  "versionId": "86ee5c98-5759-4538-af4e-00957d8ddc7d",
+  "id": "4",
   "meta": {
-    "instanceId": "0966bfb40fdba7fb47a1eee7d0ac880b557ae9acf63cbb9f411265f60a874650"
+    "instanceId": "e49c6b6fdb7616f58c344c65a20da221ca989da013b604308738f7d02278fb2c"
   },
   "tags": []
 }
