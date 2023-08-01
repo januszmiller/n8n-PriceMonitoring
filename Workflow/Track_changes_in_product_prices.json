@@ -1,0 +1,682 @@
+{
+  "name": "Track_changes_in_product_prices",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 15,
+              "unit": "minutes"
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        3320,
+        1480
+      ],
+      "typeVersion": 1,
+      "id": "cbe5438b-a5e6-4d8f-8f3b-dfb1d0b0ea82"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "Discord",
+              "value": "https://discord.com/api/webhooks/xxx"
+            },
+            {
+              "name": "GoogleSheetID",
+              "value": "xxx"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "CONFIG",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        1300
+      ],
+      "id": "2899f5f4-24d6-4732-9cc3-bef40366036d"
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"URL\"]}}",
+        "responseFormat": "string",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "name": "Fetch web",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3940,
+        1480
+      ],
+      "typeVersion": 1,
+      "id": "308a5631-205e-408c-8763-7c971ad9cbfc"
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "price",
+              "cssSelector": "={{$node[\"Get single item\"].json[\"Selector\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "HTML extract",
+      "type": "n8n-nodes-base.htmlExtract",
+      "position": [
+        4140,
+        1480
+      ],
+      "typeVersion": 1,
+      "id": "d13d6a23-858b-46e7-8ec0-6d1e12b400eb"
+    },
+    {
+      "parameters": {
+        "functionCode": "var price = String(item.price).replace(\",\", \".\");\nprice = parseFloat(price);\n\nitem.priceExists = (price > 0 ? true : false)\nitem.price = price;\n\nreturn item;"
+      },
+      "name": "Get actual price",
+      "type": "n8n-nodes-base.functionItem",
+      "position": [
+        4340,
+        1480
+      ],
+      "typeVersion": 1,
+      "id": "e3e83059-2d32-4aeb-9531-e964974d76b4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [],
+          "boolean": [
+            {
+              "value1": "={{$node[\"Get actual price\"].json[\"priceExists\"]}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Price exists",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        4520,
+        1480
+      ],
+      "typeVersion": 1,
+      "id": "7d34e6e8-7948-4308-bfa0-e590c8a2569a"
+    },
+    {
+      "parameters": {
+        "webhookUri": "={{$node[\"CONFIG\"].parameter[\"values\"][\"string\"][0][\"value\"]}}",
+        "text": "=Please check the link or selector for the item with slug {{$node[\"Get single item\"].json[\"Name\"]}}\nURL: {{$node[\"Get single item\"].json[\"URL\"]}}",
+        "options": {}
+      },
+      "name": "Notify incorrect price",
+      "type": "n8n-nodes-base.discord",
+      "position": [
+        4720,
+        1640
+      ],
+      "typeVersion": 1,
+      "id": "0e361628-7d7f-43f1-bea6-946e24e7d7b1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"Price\"]}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Last price exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4900,
+        1460
+      ],
+      "id": "ee49d358-1bba-4a9b-b7e1-790747359276"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "Date",
+              "value": "={{DateTime.fromISO($json[\"Now\"]).toFormat(\"yyyy-MM-dd HH:mm:ss\")}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "Price",
+              "value": "={{$node[\"Get actual price\"].json[\"price\"]}}"
+            },
+            {
+              "name": "ID_Item",
+              "value": "={{$node[\"Get single item\"].json[\"ID\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set new price values",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        5420,
+        1680
+      ],
+      "id": "576cf598-4ad0-4c96-8541-ee59cefb0ffc"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "Now",
+              "value": "={{$now}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Get date",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        5240,
+        1680
+      ],
+      "typeVersion": 1,
+      "id": "e8f9b6c5-a12b-461e-ba8c-b207e0569f2f"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {
+          "reset": true
+        }
+      },
+      "name": "Get top record",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        5280,
+        1440
+      ],
+      "alwaysOutputData": false,
+      "id": "ec60dfd6-8263-4607-93a1-7f3258f7d6cc"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$node[\"Get actual price\"].json[\"price\"]}}",
+              "operation": "notEqual",
+              "value2": "={{$json[\"Price\"]}}"
+            }
+          ]
+        }
+      },
+      "name": "Price changed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5020,
+        1700
+      ],
+      "id": "8edb7a7f-8456-4027-bb3f-543ee1287c9e"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $node[\"CONFIG\"].parameter[\"values\"][\"string\"][1][\"value\"] }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "item_list",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xuZh-7niCcDBCf2AEIlo2WhN0P8zRp3iqZk8jKKspw8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "48082c12-d972-4769-a4ca-a09adfc46eba",
+      "name": "Get item list",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        3540,
+        1480
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Get single item",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        3740,
+        1480
+      ],
+      "id": "c1525734-a4fb-436b-ac21-ae7f3a605b7f"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $node[\"CONFIG\"].parameter[\"values\"][\"string\"][1][\"value\"] }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1090262217,
+          "mode": "list",
+          "cachedResultName": "data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xuZh-7niCcDBCf2AEIlo2WhN0P8zRp3iqZk8jKKspw8/edit#gid=1090262217"
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "ID_Item",
+              "fieldValue": "={{ $json.ID_Item }}"
+            },
+            {
+              "fieldId": "Date",
+              "fieldValue": "={{ $json.Date }}"
+            },
+            {
+              "fieldId": "Price",
+              "fieldValue": "={{ $json.Price }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e80b6df4-a5c6-4956-9415-8f8ad09198d8",
+      "name": "Insert new price",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        5600,
+        1680
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sort",
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "Date",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bb156617-3e14-4716-86cf-9dfd91f6fce9",
+      "name": "Sort items",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        5100,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $node[\"CONFIG\"].parameter[\"values\"][\"string\"][1][\"value\"] }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1090262217,
+          "mode": "list",
+          "cachedResultName": "data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xuZh-7niCcDBCf2AEIlo2WhN0P8zRp3iqZk8jKKspw8/edit#gid=1090262217"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID_Item",
+              "lookupValue": "={{ $node[\"Get single item\"].json[\"ID\"] }}"
+            }
+          ]
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "83b511f3-c041-42eb-9c3e-7ff894569580",
+      "name": "Get all item records",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 3,
+      "position": [
+        4720,
+        1460
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleApi": {
+          "id": "1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$node[\"Get actual price\"].json[\"price\"]}}",
+              "value2": "={{$json[\"Price\"]*0.95}}"
+            }
+          ]
+        }
+      },
+      "name": "Price dropped > 5%",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        5480,
+        1440
+      ],
+      "id": "172acafb-9580-4809-bb2b-0f2665dd32ba"
+    },
+    {
+      "parameters": {
+        "webhookUri": "={{$node[\"CONFIG\"].parameter[\"values\"][\"string\"][0][\"value\"]}}",
+        "text": "=Nowa cena - {{$node[\"Get single item\"].json[\"Name\"]}}\nAktualna cena: {{$node[\"Get actual price\"].json[\"price\"]}} {{$node[\"Get single item\"].json[\"Currency\"]}}\nPoprzednia cena: {{$node[\"Get top record\"].json[\"Price\"]}} {{$node[\"Get single item\"].json[\"Currency\"]}}\nURL: {{$node[\"Get single item\"].json[\"URL\"]}}",
+        "options": {}
+      },
+      "name": "Notify price change",
+      "type": "n8n-nodes-base.discord",
+      "position": [
+        5700,
+        1420
+      ],
+      "typeVersion": 1,
+      "id": "244bca12-05f9-4110-ad15-cb5dcb804702"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Get item list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch web": {
+      "main": [
+        [
+          {
+            "node": "HTML extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML extract": {
+      "main": [
+        [
+          {
+            "node": "Get actual price",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get actual price": {
+      "main": [
+        [
+          {
+            "node": "Price exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Price exists": {
+      "main": [
+        [
+          {
+            "node": "Get all item records",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify incorrect price",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last price exists": {
+      "main": [
+        [
+          {
+            "node": "Sort items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set new price values": {
+      "main": [
+        [
+          {
+            "node": "Insert new price",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get date": {
+      "main": [
+        [
+          {
+            "node": "Set new price values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get top record": {
+      "main": [
+        [
+          {
+            "node": "Price dropped > 5%",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Price changed": {
+      "main": [
+        [
+          {
+            "node": "Get date",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get single item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get item list": {
+      "main": [
+        [
+          {
+            "node": "Get single item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get single item": {
+      "main": [
+        [
+          {
+            "node": "Fetch web",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert new price": {
+      "main": [
+        [
+          {
+            "node": "Get single item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify incorrect price": {
+      "main": [
+        [
+          {
+            "node": "Get single item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort items": {
+      "main": [
+        [
+          {
+            "node": "Get top record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get all item records": {
+      "main": [
+        [
+          {
+            "node": "Last price exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Price dropped > 5%": {
+      "main": [
+        [
+          {
+            "node": "Notify price change",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Price changed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify price change": {
+      "main": [
+        [
+          {
+            "node": "Get date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "86ee5c98-5759-4538-af4e-00957d8ddc7d",
+  "id": "4",
+  "meta": {
+    "instanceId": "e49c6b6fdb7616f58c344c65a20da221ca989da013b604308738f7d02278fb2c"
+  },
+  "tags": []
+}
